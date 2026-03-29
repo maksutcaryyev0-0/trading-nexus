@@ -1,17 +1,17 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
- 
+
 export default function LoginPage() {
   const navigate = useNavigate()
-  const { setToken } = useAuthStore()
+  const { setAuth } = useAuthStore()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
- 
+
   const apiUrl = import.meta.env.VITE_API_URL || ''
- 
+
   const handleLogin = async () => {
     setLoading(true)
     setError('')
@@ -23,7 +23,13 @@ export default function LoginPage() {
       })
       const data = await res.json()
       if (res.ok && data.access_token) {
-        setToken(data.access_token)
+        setAuth({
+          token: data.access_token,
+          role: data.role || 'admin',
+          lang: 'en',
+          timezone: 'Europe/Moscow',
+          username: username,
+        })
         navigate('/app')
       } else {
         setError(data.detail || 'Login failed')
@@ -33,7 +39,7 @@ export default function LoginPage() {
     }
     setLoading(false)
   }
- 
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -55,13 +61,13 @@ export default function LoginPage() {
         <p style={{ color: '#666', textAlign: 'center', marginBottom: '2rem', fontSize: '0.9rem' }}>
           Trading Operating System
         </p>
- 
+
         {error && (
           <div style={{ background: '#2a1515', border: '1px solid #ff4444', borderRadius: '8px', padding: '0.75rem', marginBottom: '1rem', color: '#ff6666', fontSize: '0.9rem' }}>
             {error}
           </div>
         )}
- 
+
         <div style={{ marginBottom: '1rem' }}>
           <input
             type="text"
@@ -81,7 +87,7 @@ export default function LoginPage() {
             }}
           />
         </div>
- 
+
         <div style={{ marginBottom: '1.5rem' }}>
           <input
             type="password"
@@ -102,7 +108,7 @@ export default function LoginPage() {
             }}
           />
         </div>
- 
+
         <button
           onClick={handleLogin}
           disabled={loading}
