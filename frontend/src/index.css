@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+→ **Commit changes**
+
+Потом открой `main.tsx` → нажми ✏️ → добавь в начало файла строку:
+```
+import './index.css'
